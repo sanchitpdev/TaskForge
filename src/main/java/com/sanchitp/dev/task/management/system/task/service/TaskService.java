@@ -32,7 +32,7 @@ public class TaskService {
 
     public Task assignTaskToUser(Long taskId, Long userId){
         Task task = taskRepository.findById(taskId).orElseThrow(()-> new RuntimeException("Task not Found"));
-        User user = taskRepository.findById(userId).orElseThrow(()-> new RuntimeException("User Not Found")).getAssignedTo();
+        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User Not Found"));
 
         task.setAssignedTo(user);
         task.setTaskStatus(TaskStatus.ASSIGNED);
