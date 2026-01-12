@@ -2,6 +2,7 @@
 
     import com.sanchitp.dev.task.management.system.user.dto.CreateUserRequest;
     import com.sanchitp.dev.task.management.system.user.dto.UpdateUserRequest;
+    import com.sanchitp.dev.task.management.system.user.dto.UserResponse;
     import com.sanchitp.dev.task.management.system.user.entity.User;
     import com.sanchitp.dev.task.management.system.user.service.UserService;
     import jakarta.validation.Valid;
@@ -23,7 +24,7 @@
         //Create User
         @PostMapping
         @ResponseStatus(HttpStatus.CREATED)
-        public User createUser(@Valid @RequestBody CreateUserRequest request){
+        public UserResponse createUser(@Valid @RequestBody CreateUserRequest request){
             return userService.createUser(
                     request.getName(),
                     request.getEmail(),
@@ -33,14 +34,14 @@
 
         //Get User By I'd
         @GetMapping("/{id}")
-        public User getUserById(@PathVariable Long id){
+        public UserResponse getUserById(@PathVariable Long id){
 
             return userService.getUserById(id);
         }
 
         //Get All Users
         @GetMapping
-        public List<User> getAllUsers(){
+        public List<UserResponse> getAllUsers(){
 
             return userService.getAllUsers();
         }
@@ -55,7 +56,7 @@
 
         //Patch To Update User
         @PatchMapping("/{id}")
-        public User updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequest request){
+        public UserResponse updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequest request){
             return userService.updateUser(
                     id,
                     request.getName(),
@@ -66,7 +67,7 @@
 
         //Put To Replace User
         @PutMapping("/{id}")
-        public User replaceUser(@PathVariable Long id,@Valid @RequestBody CreateUserRequest request){
+        public UserResponse replaceUser(@PathVariable Long id,@Valid @RequestBody CreateUserRequest request){
             return userService.replaceUser(
                     id,
                     request.getName(),

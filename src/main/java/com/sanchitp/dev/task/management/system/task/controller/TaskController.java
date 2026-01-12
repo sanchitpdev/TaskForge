@@ -2,6 +2,7 @@ package com.sanchitp.dev.task.management.system.task.controller;
 
 import com.sanchitp.dev.task.management.system.task.dto.AssignTaskRequest;
 import com.sanchitp.dev.task.management.system.task.dto.CreateTaskRequest;
+import com.sanchitp.dev.task.management.system.task.dto.TaskResponse;
 import com.sanchitp.dev.task.management.system.task.dto.UpdateTaskStatusRequest;
 import com.sanchitp.dev.task.management.system.task.entity.Task;
 import com.sanchitp.dev.task.management.system.task.service.TaskService;
@@ -25,8 +26,8 @@ public class TaskController {
     //Create Task
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@Valid @RequestBody CreateTaskRequest request){
-        return taskService.creatTask(
+    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request){
+        return taskService.createTask(
                 request.getTitle(),
                 request.getDescription()
         );
@@ -34,26 +35,26 @@ public class TaskController {
 
     //Get Task By User I'd
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id){
+    public TaskResponse getTaskById(@PathVariable Long id){
         return taskService.getTaskById(id);
     }
 
     //Get All Task
     @GetMapping
-    public List<Task> getAllTasks(){
+    public List<TaskResponse> getAllTasks(){
         return taskService.findAllTasks();
     }
 
     //Assign Task To User
     @PostMapping("/{taskId}/assign")
-    public Task assignTask(@PathVariable Long taskId,
+    public TaskResponse assignTask(@PathVariable Long taskId,
                            @Valid @RequestBody AssignTaskRequest request){
         return taskService.assignTaskToUser(taskId,request.getUserId());
     }
 
     //Update Task Status
     @PatchMapping("/{id}/status")
-    public Task updateTaskStatus(@PathVariable Long taskId,
+    public TaskResponse updateTaskStatus(@PathVariable Long taskId,
                                  @Valid @RequestBody UpdateTaskStatusRequest request)
     {
         return taskService.updateTaskStatus(taskId,request.getStatus());
@@ -61,7 +62,7 @@ public class TaskController {
 
     //Get User By Task
     @GetMapping("/user/{userId}")
-    public List<Task> getTaskByUserId(@PathVariable Long userId){
+    public List<TaskResponse> getTaskByUserId(@PathVariable Long userId){
         return taskService.getTaskByUser(userId);
     }
 }

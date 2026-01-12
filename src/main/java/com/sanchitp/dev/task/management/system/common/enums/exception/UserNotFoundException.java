@@ -1,4 +1,4 @@
-package com.sanchitp.dev.task.management.system.user.exception;
+package com.sanchitp.dev.task.management.system.common.enums.exception;
 
 public class UserNotFoundException extends RuntimeException{
     public UserNotFoundException(Long id) {
