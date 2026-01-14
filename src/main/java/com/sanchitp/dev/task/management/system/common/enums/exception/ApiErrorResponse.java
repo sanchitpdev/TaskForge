@@ -9,11 +9,23 @@ public class ApiErrorResponse {
     private int status;
     private String message;
     private LocalDate timestamp;
+    private String error;
+    private String path;
 
-    public ApiErrorResponse(int status, String message) {
+    public ApiErrorResponse(int status, String message,String error, String path) {
         this.status = status;
         this.message = message;
         this.timestamp = LocalDate.from(now());
+        this.error = error;
+        this.path = path;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public int getStatus() {

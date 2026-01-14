@@ -1,78 +1,35 @@
-    package com.sanchitp.dev.task.management.system.user.controller;
+package com.sanchitp.dev.task.management.system.user.controller;
 
-    import com.sanchitp.dev.task.management.system.user.dto.CreateUserRequest;
-    import com.sanchitp.dev.task.management.system.user.dto.UpdateUserRequest;
-    import com.sanchitp.dev.task.management.system.user.dto.UserResponse;
-    import com.sanchitp.dev.task.management.system.user.entity.User;
-    import com.sanchitp.dev.task.management.system.user.service.UserService;
-    import jakarta.validation.Valid;
-    import org.springframework.http.HttpStatus;
-    import org.springframework.web.bind.annotation.*;
+import com.sanchitp.dev.task.management.system.user.dto.UpdateUserRequest;
+import com.sanchitp.dev.task.management.system.user.dto.UserResponse;
+import com.sanchitp.dev.task.management.system.user.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-    import java.util.List;
+@RestController
+@RequestMapping("/users")
+@PreAuthorize("isAuthenticated()")
+public class UserController {
 
-    @RestController
-    @RequestMapping("/users")
-    public class UserController{
+    private final UserService userService;
 
-        private final UserService userService;
-
-        public UserController(UserService userService) {
-            this.userService = userService;
-        }
-
-        //Create User
-        @PostMapping
-        @ResponseStatus(HttpStatus.CREATED)
-        public UserResponse createUser(@Valid @RequestBody CreateUserRequest request){
-            return userService.createUser(
-                    request.getName(),
-                    request.getEmail(),
-                    request.getRole()
-            );
-        }
-
-        //Get User By I'd
-        @GetMapping("/me")
-        public UserResponse getUserById(@PathVariable Long id){
-
-            return userService.getUserById(id);
-        }
-
-        //Get All Users
-//        @GetMapping
-//        public List<UserResponse> getAllUsers(){
-//
-//            return userService.getAllUsers();
-//        }
-//
-//        //Delete User By I'd
-//        @DeleteMapping("/{id}")
-//        @ResponseStatus(HttpStatus.NO_CONTENT)
-//        public void deleteUser(@PathVariable Long id){
-//
-//            userService.deleteUser(id);
-//        }
-
-        //Patch To Update User
-        @PatchMapping("/{id}")
-        public UserResponse updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequest request){
-            return userService.updateUser(
-                    id,
-                    request.getName(),
-                    request.getEmail(),
-                    request.getRole()
-            );
-        }
-//
-//        //Put To Replace User
-//        @PutMapping("/{id}")
-//        public UserResponse replaceUser(@PathVariable Long id,@Valid @RequestBody CreateUserRequest request){
-//            return userService.replaceUser(
-//                    id,
-//                    request.getName(),
-//                    request.getEmail(),
-//                    request.getRole()
-//            );
-//        }
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
+
+    @GetMapping("/me")
+    public UserResponse getMyProfile() {
+        return userService.getCurrentUserProfile();
+    }
+
+    @PatchMapping("/me")
+    public UserResponse updateMyProfile(
+            @Valid @RequestBody UpdateUserRequest request
+    ) {
+        return userService.updateCurrentUser(
+                request.getName(),
+                request.getEmail()
+        );
+    }
+}

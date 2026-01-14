@@ -10,7 +10,7 @@ public class UpdateUserRequest {
 
     @Email(message = "Invalid email format")
     private String email;
-    private Role role;
+
 
     public String getName() {
         return name;
@@ -20,8 +20,5 @@ public class UpdateUserRequest {
         return email;
     }
 
-    public Role getRole() {
-        return role;
-    }
 
 }
