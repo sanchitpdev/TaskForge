@@ -16,16 +16,19 @@ public class UserResponse {
         this.role = role;
     }
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public String getEmail(){
+
+    public String getEmail() {
         return email;
     }
-    public Role role(){
+
+    public Role getRole() {
         return role;
     }
 }

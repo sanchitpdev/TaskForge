@@ -3,8 +3,11 @@ package com.sanchitp.dev.task.management.system.admin.service;
 import com.sanchitp.dev.task.management.system.admin.dto.CreateUserRequest;
 import com.sanchitp.dev.task.management.system.admin.dto.UserResponse;
 import com.sanchitp.dev.task.management.system.common.enums.exception.UserNotFoundException;
+import com.sanchitp.dev.task.management.system.security.service.CustomUserDetails;
+import com.sanchitp.dev.task.management.system.security.util.SecurityUtils;
 import com.sanchitp.dev.task.management.system.user.entity.User;
 import com.sanchitp.dev.task.management.system.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,10 +53,19 @@ public class AdminUserService {
     }
 
     /* ================= UPDATE ROLE ================= */
+    @Transactional
+    public UserResponse updateUserRole(Long userId, String role) {
 
-    public UserResponse updateUserRole(Long userId,String role){
+        CustomUserDetails currentUser = SecurityUtils.getCurrentUser();
+
+        if (currentUser != null && currentUser.getUserId().equals(userId)) {
+            throw new IllegalStateException(
+                    "You cannot change your own role"
+            );
+        }
+
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException(userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         user.setRole(Enum.valueOf(user.getRole().getDeclaringClass(), role));
         return toResponse(userRepository.save(user));

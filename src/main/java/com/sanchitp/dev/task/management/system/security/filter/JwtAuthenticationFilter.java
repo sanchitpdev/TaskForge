@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         //Extract Token
         if (jwtUtil.isTokenValid(token)){
             String email = jwtUtil.extractUsername(token);
-
+    
             var userDetails = userDetailsService.loadUserByUsername(email);
 
             //Create Authentication Object
