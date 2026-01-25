@@ -4,6 +4,8 @@ import com.sanchitp.dev.task.management.system.common.enums.TaskStatus;
 import com.sanchitp.dev.task.management.system.user.entity.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "tasks")
 public class Task {

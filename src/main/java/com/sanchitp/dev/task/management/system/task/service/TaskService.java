@@ -10,8 +10,8 @@ import com.sanchitp.dev.task.management.system.task.entity.Task;
 import com.sanchitp.dev.task.management.system.task.repository.TaskRepository;
 import com.sanchitp.dev.task.management.system.user.entity.User;
 import com.sanchitp.dev.task.management.system.user.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-
 import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
@@ -58,16 +58,18 @@ public class TaskService {
 
     /* ===================== CRUD ===================== */
 
+    @Transactional
     public TaskResponse createTask(String title ,String description){
-        getCurrentUserOrThrow();
-
         Task task = new Task();
         task.setTitle(title);
         task.setDescription(description);
         task.setTaskStatus(TaskStatus.CREATED);
-        return toResponse(taskRepository.save(task));
+
+        Task saved = taskRepository.save(task);
+        return toResponse(saved);
     }
 
+    @Transactional
     public TaskResponse assignTaskToUser(Long taskId, Long userId){
         CustomUserDetails currentUser= getCurrentUserOrThrow();
 
@@ -89,6 +91,7 @@ public class TaskService {
         return toResponse(getTaskEntityById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<TaskResponse> findAllTasks(){
         return taskRepository.findAll().stream().map(this::toResponse).toList();
     }
@@ -116,5 +119,49 @@ public class TaskService {
 
         task.setTaskStatus(status);
         return toResponse(taskRepository.save(task));
+    }
+
+    @Transactional
+    public TaskResponse markTaskReadyForReview(Long taskId) {
+
+        User user = getCurrentUserOrThrow().getUser();
+
+        Task task = getTaskEntityById(taskId);
+
+        if (task.getAssignedTo() == null ||
+                !task.getAssignedTo().getId().equals(user.getId())) {
+            throw new AccessDeniedException("Not your task");
+        }
+
+        task.setTaskStatus(TaskStatus.READY_FOR_REVIEW);
+        return toResponse(taskRepository.save(task));
+    }
+
+    @Transactional
+    public TaskResponse completeTask(Long taskId) {
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (task.getTaskStatus() != TaskStatus.READY_FOR_REVIEW) {
+            throw new IllegalStateException("Task not ready for verification");
+        }
+
+        task.setTaskStatus(TaskStatus.COMPLETED);
+        return toResponse(taskRepository.save(task));
+    }
+
+    public void approveTask(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        if (task.getTaskStatus() != TaskStatus.READY_FOR_REVIEW) {
+            throw new IllegalStateException(
+                    "Only READY_FOR_REVIEW tasks can be approved"
+            );
+        }
+
+        task.setTaskStatus(TaskStatus.APPROVED);
+        taskRepository.save(task);
     }
 }

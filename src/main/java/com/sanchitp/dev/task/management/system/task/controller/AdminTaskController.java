@@ -3,13 +3,15 @@ package com.sanchitp.dev.task.management.system.task.controller;
 import com.sanchitp.dev.task.management.system.task.dto.*;
 import com.sanchitp.dev.task.management.system.task.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/tasks")
+@RequestMapping("api/admin/tasks")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminTaskController {
 
@@ -27,7 +29,7 @@ public class AdminTaskController {
         );
     }
 
-    @PostMapping("/{taskId}/assign")
+    @PatchMapping("/{taskId}/assign")
     public TaskResponse assignTask(@PathVariable Long taskId,
                                    @Valid @RequestBody AssignTaskRequest request) {
         return taskService.assignTaskToUser(taskId, request.getUserId());
@@ -43,4 +45,16 @@ public class AdminTaskController {
     public List<TaskResponse> getAllTasks() {
         return taskService.findAllTasks();
     }
+
+    @PatchMapping("/{taskId}/complete")
+    public TaskResponse completeTask(@PathVariable Long taskId) {
+        return taskService.completeTask(taskId);
+    }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<Void> approveTask(@PathVariable Long id) {
+        taskService.approveTask(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

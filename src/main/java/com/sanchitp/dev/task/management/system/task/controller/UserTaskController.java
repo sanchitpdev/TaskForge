@@ -4,14 +4,12 @@ import com.sanchitp.dev.task.management.system.security.util.SecurityUtils;
 import com.sanchitp.dev.task.management.system.task.dto.TaskResponse;
 import com.sanchitp.dev.task.management.system.task.service.TaskService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/tasks")
+@RequestMapping("api/users/tasks")
 @PreAuthorize("hasRole('USER')")
 public class UserTaskController {
 
@@ -26,4 +24,10 @@ public class UserTaskController {
         Long userId = SecurityUtils.getCurrentUser().getUserId();
         return taskService.getTaskByUser(userId);
     }
+
+    @PatchMapping("/{taskId}/ready")
+    public TaskResponse markReadyForReview(@PathVariable Long taskId) {
+        return taskService.markTaskReadyForReview(taskId);
+    }
+
 }
