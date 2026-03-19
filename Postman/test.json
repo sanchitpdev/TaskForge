@@ -1,0 +1,1275 @@
+{
+  "info": {
+    "name": "TaskForge — Complete Test Suite",
+    "description": "Full API test suite using real seeded credentials.\n\nCREDENTIALS:\n  Admins  → admin1/2/3@example.com  | password: admin123\n  Users   → arjun.sharma, priya.mehta, rohan.verma, sneha.patel, karan.singh, neha.joshi @example.com | password: user123\n\nRUN ORDER:\n  1. 🔐 Auth\n  2. 👤 Admin — Users\n  3. 📋 Admin — Tasks\n  4. ✅ User — Tasks\n  5. 🙋 User — Profile\n  6. 🔒 Security Checks",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+
+  "variable": [
+    { "key": "baseUrl",      "value": "http://localhost:8080", "type": "string" },
+    { "key": "adminToken",   "value": "", "type": "string" },
+    { "key": "admin2Token",  "value": "", "type": "string" },
+    { "key": "userToken",    "value": "", "type": "string" },
+    { "key": "user2Token",   "value": "", "type": "string" },
+    { "key": "newUserId",    "value": "", "type": "string" },
+    { "key": "newTaskId",    "value": "", "type": "string" }
+  ],
+
+  "item": [
+
+    {
+      "name": "🔐 Auth",
+      "item": [
+
+        {
+          "name": "1. Admin One Login → saves adminToken",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(res.accessToken).to.be.a('string'));",
+              "if (res.accessToken) {",
+              "    pm.collectionVariables.set('adminToken', res.accessToken);",
+              "    console.log('adminToken saved');",
+              "}"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin1@example.com\",\n  \"password\": \"admin123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "2. Admin Two Login → saves admin2Token",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(res.accessToken).to.be.a('string'));",
+              "if (res.accessToken) {",
+              "    pm.collectionVariables.set('admin2Token', res.accessToken);",
+              "    console.log('admin2Token saved');",
+              "}"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin2@example.com\",\n  \"password\": \"admin123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "3. Admin Three Login",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin3@example.com\",\n  \"password\": \"admin123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "4. Arjun Sharma Login → saves userToken",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(res.accessToken).to.be.a('string'));",
+              "if (res.accessToken) {",
+              "    pm.collectionVariables.set('userToken', res.accessToken);",
+              "    console.log('userToken saved for Arjun Sharma');",
+              "}"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"arjun.sharma@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "5. Priya Mehta Login → saves user2Token",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(res.accessToken).to.be.a('string'));",
+              "if (res.accessToken) {",
+              "    pm.collectionVariables.set('user2Token', res.accessToken);",
+              "    console.log('user2Token saved for Priya Mehta');",
+              "}"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"priya.mehta@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "6. Rohan Verma Login",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"rohan.verma@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "7. Sneha Patel Login",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"sneha.patel@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "8. Karan Singh Login",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"karan.singh@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "9. Neha Joshi Login",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has accessToken', () => pm.expect(pm.response.json().accessToken).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"neha.joshi@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "10. FAIL — Wrong Password (admin1) → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));",
+              "pm.test('No token in response', () => pm.expect(pm.response.json().accessToken).to.be.undefined);"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin1@example.com\",\n  \"password\": \"wrongpassword\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "11. FAIL — Wrong Password (arjun.sharma) → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"arjun.sharma@example.com\",\n  \"password\": \"admin123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "12. FAIL — Non-existent Email → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"nobody@example.com\",\n  \"password\": \"user123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "13. FAIL — Invalid Email Format → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"admin123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "14. FAIL — Empty Body → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api","auth","login"] }
+          }
+        },
+
+        {
+          "name": "15. FAIL — No Token on secured endpoint → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "👤 Admin — Users",
+      "item": [
+
+        {
+          "name": "16. Get All Users (9 seeded users)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns array', () => pm.expect(res).to.be.an('array'));",
+              "pm.test('Has 9 users', () => pm.expect(res.length).to.eql(9));",
+              "pm.test('Admin One exists', () => pm.expect(res.some(u => u.email === 'admin1@example.com')).to.be.true);",
+              "pm.test('Arjun Sharma exists', () => pm.expect(res.some(u => u.email === 'arjun.sharma@example.com')).to.be.true);"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "17. Create New USER — Vikram Nair",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Has id', () => pm.expect(res.id).to.be.a('number'));",
+              "pm.test('Name correct', () => pm.expect(res.name).to.eql('Vikram Nair'));",
+              "pm.test('Email correct', () => pm.expect(res.email).to.eql('vikram.nair@example.com'));",
+              "pm.test('Role is USER', () => pm.expect(res.role).to.eql('USER'));",
+              "pm.collectionVariables.set('newUserId', res.id);",
+              "console.log('newUserId saved:', res.id);"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Vikram Nair\",\n  \"email\": \"vikram.nair@example.com\",\n  \"password\": \"vikram123\",\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "18. Create New ADMIN — Divya Rao",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Name correct', () => pm.expect(res.name).to.eql('Divya Rao'));",
+              "pm.test('Role is ADMIN', () => pm.expect(res.role).to.eql('ADMIN'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Divya Rao\",\n  \"email\": \"divya.rao@example.com\",\n  \"password\": \"divya123\",\n  \"role\": \"ADMIN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "19. Get All Users (should now be 11)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Now has 11 users', () => pm.expect(res.length).to.eql(11));",
+              "pm.test('Vikram Nair exists', () => pm.expect(res.some(u => u.email === 'vikram.nair@example.com')).to.be.true);",
+              "pm.test('Divya Rao exists', () => pm.expect(res.some(u => u.email === 'divya.rao@example.com')).to.be.true);"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "20. Update Vikram Role → ADMIN",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Role is now ADMIN', () => pm.expect(res.role).to.eql('ADMIN'));",
+              "pm.test('Name unchanged', () => pm.expect(res.name).to.eql('Vikram Nair'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"ADMIN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users/{{newUserId}}/role", "host": ["{{baseUrl}}"], "path": ["api","admin","users","{{newUserId}}","role"] }
+          }
+        },
+
+        {
+          "name": "21. Update Vikram Role back → USER",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Role is now USER', () => pm.expect(res.role).to.eql('USER'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users/{{newUserId}}/role", "host": ["{{baseUrl}}"], "path": ["api","admin","users","{{newUserId}}","role"] }
+          }
+        },
+
+        {
+          "name": "22. FAIL — Duplicate Email (arjun.sharma already exists) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));",
+              "pm.test('Error message present', () => pm.expect(pm.response.json().message).to.include('arjun.sharma@example.com'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Another Arjun\",\n  \"email\": \"arjun.sharma@example.com\",\n  \"password\": \"user123\",\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "23. FAIL — Duplicate Email (admin1 already exists) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Duplicate Admin\",\n  \"email\": \"admin1@example.com\",\n  \"password\": \"admin123\",\n  \"role\": \"ADMIN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "24. FAIL — Missing Name Field → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\",\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "25. FAIL — Short Password (under 6 chars) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Short Pass\",\n  \"email\": \"shortpass@example.com\",\n  \"password\": \"abc\",\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "26. FAIL — Invalid Role Value → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Bad Role\",\n  \"email\": \"badrole@example.com\",\n  \"password\": \"pass123\",\n  \"role\": \"SUPERADMIN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "27. FAIL — Change Own Role (admin1 changes ID 1) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));",
+              "pm.test('Self-change error', () => pm.expect(pm.response.json().message).to.include('cannot change your own role'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users/1/role", "host": ["{{baseUrl}}"], "path": ["api","admin","users","1","role"] }
+          }
+        },
+
+        {
+          "name": "28. FAIL — User Not Found (ID 99999) → expect 404",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));",
+              "pm.test('Error message has id', () => pm.expect(pm.response.json().message).to.include('99999'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"USER\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users/99999/role", "host": ["{{baseUrl}}"], "path": ["api","admin","users","99999","role"] }
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "📋 Admin — Tasks",
+      "item": [
+
+        {
+          "name": "29. Get All Tasks (18 seeded tasks)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns array', () => pm.expect(res).to.be.an('array'));",
+              "pm.test('Has 18 tasks', () => pm.expect(res.length).to.eql(18));",
+              "const statuses = res.map(t => t.taskStatus);",
+              "pm.test('Has CREATED tasks', () => pm.expect(statuses).to.include('CREATED'));",
+              "pm.test('Has ASSIGNED tasks', () => pm.expect(statuses).to.include('ASSIGNED'));",
+              "pm.test('Has IN_PROGRESS tasks', () => pm.expect(statuses).to.include('IN_PROGRESS'));",
+              "pm.test('Has READY_FOR_REVIEW tasks', () => pm.expect(statuses).to.include('READY_FOR_REVIEW'));",
+              "pm.test('Has COMPLETED tasks', () => pm.expect(statuses).to.include('COMPLETED'));",
+              "pm.test('Has APPROVED tasks', () => pm.expect(statuses).to.include('APPROVED'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        },
+
+        {
+          "name": "30. Create Task — Mobile App Feature",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Has id', () => pm.expect(res.id).to.be.a('number'));",
+              "pm.test('Status is CREATED', () => pm.expect(res.taskStatus).to.eql('CREATED'));",
+              "pm.test('assignedUserId is null', () => pm.expect(res.assignedUserId).to.be.null);",
+              "pm.test('Title correct', () => pm.expect(res.title).to.eql('Build mobile app push notifications'));",
+              "pm.collectionVariables.set('newTaskId', res.id);",
+              "console.log('newTaskId saved:', res.id);"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Build mobile app push notifications\",\n  \"description\": \"Integrate Firebase Cloud Messaging to send push notifications when a task is assigned or status changes.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        },
+
+        {
+          "name": "31. Create Task — Performance Testing",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Status is CREATED', () => pm.expect(pm.response.json().taskStatus).to.eql('CREATED'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Run performance and load testing\",\n  \"description\": \"Use Apache JMeter to run load tests on all API endpoints. Target: handle 500 concurrent users with response time under 300ms.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        },
+
+        {
+          "name": "32. Assign new task → Karan Singh (ID 8)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Status is ASSIGNED', () => pm.expect(res.taskStatus).to.eql('ASSIGNED'));",
+              "pm.test('assignedUserId is 8', () => pm.expect(res.assignedUserId).to.eql(8));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": 8\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/{{newTaskId}}/assign", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","{{newTaskId}}","assign"] }
+          }
+        },
+
+        {
+          "name": "33. Reassign same task → Arjun Sharma (ID 4)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Status is ASSIGNED', () => pm.expect(res.taskStatus).to.eql('ASSIGNED'));",
+              "pm.test('assignedUserId is now 4', () => pm.expect(res.assignedUserId).to.eql(4));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": 4\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/{{newTaskId}}/assign", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","{{newTaskId}}","assign"] }
+          }
+        },
+
+        {
+          "name": "34. Update task status → IN_PROGRESS",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is IN_PROGRESS', () => pm.expect(pm.response.json().taskStatus).to.eql('IN_PROGRESS'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/{{newTaskId}}/status", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","{{newTaskId}}","status"] }
+          }
+        },
+
+        {
+          "name": "35. Update task status → READY_FOR_REVIEW (admin override)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is READY_FOR_REVIEW', () => pm.expect(pm.response.json().taskStatus).to.eql('READY_FOR_REVIEW'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"READY_FOR_REVIEW\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/{{newTaskId}}/status", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","{{newTaskId}}","status"] }
+          }
+        },
+
+        {
+          "name": "36. Complete task (now READY_FOR_REVIEW → COMPLETED)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is COMPLETED', () => pm.expect(pm.response.json().taskStatus).to.eql('COMPLETED'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/{{newTaskId}}/complete", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","{{newTaskId}}","complete"] }
+          }
+        },
+
+        {
+          "name": "37. Test Approve on seeded READY_FOR_REVIEW task (ID 10)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/10/approve", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","10","approve"] }
+          }
+        },
+
+        {
+          "name": "38. Test Complete on seeded READY_FOR_REVIEW task (ID 11)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is COMPLETED', () => pm.expect(pm.response.json().taskStatus).to.eql('COMPLETED'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/11/complete", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","11","complete"] }
+          }
+        },
+
+        {
+          "name": "39. FAIL — Complete task NOT in READY_FOR_REVIEW (ID 1 is CREATED) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));",
+              "pm.test('Error about state', () => pm.expect(pm.response.json().message).to.include('READY_FOR_REVIEW'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/1/complete", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","1","complete"] }
+          }
+        },
+
+        {
+          "name": "40. FAIL — Approve task NOT in READY_FOR_REVIEW (ID 1 is CREATED) → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));",
+              "pm.test('Error about state', () => pm.expect(pm.response.json().message).to.include('READY_FOR_REVIEW'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/1/approve", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","1","approve"] }
+          }
+        },
+
+        {
+          "name": "41. FAIL — Assign to non-existent user (ID 99999) → expect 404",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));",
+              "pm.test('Error message has id', () => pm.expect(pm.response.json().message).to.include('99999'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": 99999\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/1/assign", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","1","assign"] }
+          }
+        },
+
+        {
+          "name": "42. FAIL — Task Not Found (ID 99999) → expect 404",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));",
+              "pm.test('Error message has id', () => pm.expect(pm.response.json().message).to.include('99999'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": 4\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks/99999/assign", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks","99999","assign"] }
+          }
+        },
+
+        {
+          "name": "43. FAIL — Create task with missing title → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"This has no title\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "✅ User — Tasks",
+      "item": [
+
+        {
+          "name": "44. Arjun gets his tasks (assigned_to = 4)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns array', () => pm.expect(res).to.be.an('array'));",
+              "pm.test('All tasks belong to Arjun', () => res.forEach(t => pm.expect(t.assignedUserId).to.eql(4)));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks", "host": ["{{baseUrl}}"], "path": ["api","users","tasks"] }
+          }
+        },
+
+        {
+          "name": "45. Priya gets her tasks (assigned_to = 5)",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns array', () => pm.expect(res).to.be.an('array'));",
+              "pm.test('All tasks belong to Priya', () => res.forEach(t => pm.expect(t.assignedUserId).to.eql(5)));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{user2Token}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks", "host": ["{{baseUrl}}"], "path": ["api","users","tasks"] }
+          }
+        },
+
+        {
+          "name": "46. Arjun marks task 7 (IN_PROGRESS) → READY_FOR_REVIEW",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is READY_FOR_REVIEW', () => pm.expect(pm.response.json().taskStatus).to.eql('READY_FOR_REVIEW'));",
+              "pm.test('Still assigned to Arjun', () => pm.expect(pm.response.json().assignedUserId).to.eql(4));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/7/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","7","ready"] }
+          }
+        },
+
+        {
+          "name": "47. Arjun marks task 4 (ASSIGNED) → READY_FOR_REVIEW",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is READY_FOR_REVIEW', () => pm.expect(pm.response.json().taskStatus).to.eql('READY_FOR_REVIEW'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/4/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","4","ready"] }
+          }
+        },
+
+        {
+          "name": "48. Priya marks task 9 (IN_PROGRESS) → READY_FOR_REVIEW",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('taskStatus is READY_FOR_REVIEW', () => pm.expect(pm.response.json().taskStatus).to.eql('READY_FOR_REVIEW'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{user2Token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/9/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","9","ready"] }
+          }
+        },
+
+        {
+          "name": "49. FAIL — Arjun tries task 8 (belongs to Priya) → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));",
+              "pm.test('Access denied message', () => pm.expect(pm.response.json().message).to.be.a('string'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/8/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","8","ready"] }
+          }
+        },
+
+        {
+          "name": "50. FAIL — Priya tries task 4 (belongs to Arjun) → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{user2Token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/4/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","4","ready"] }
+          }
+        },
+
+        {
+          "name": "51. FAIL — Task not found (ID 99999) → expect 404",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/99999/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","99999","ready"] }
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "🙋 User — Profile",
+      "item": [
+
+        {
+          "name": "52. Arjun gets his own profile",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('ID is 4', () => pm.expect(res.id).to.eql(4));",
+              "pm.test('Name is Arjun Sharma', () => pm.expect(res.name).to.eql('Arjun Sharma'));",
+              "pm.test('Email correct', () => pm.expect(res.email).to.eql('arjun.sharma@example.com'));",
+              "pm.test('Role is USER', () => pm.expect(res.role).to.eql('USER'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "53. Admin One gets his own profile",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('ID is 1', () => pm.expect(res.id).to.eql(1));",
+              "pm.test('Name is Admin One', () => pm.expect(res.name).to.eql('Admin One'));",
+              "pm.test('Role is ADMIN', () => pm.expect(res.role).to.eql('ADMIN'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "54. Priya updates her own name",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const res = pm.response.json();",
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Name updated', () => pm.expect(res.name).to.eql('Priya Mehta Updated'));",
+              "pm.test('Email unchanged', () => pm.expect(res.email).to.eql('priya.mehta@example.com'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{user2Token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Priya Mehta Updated\",\n  \"email\": \"priya.mehta@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "55. Priya reverts her name back",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Name reverted', () => pm.expect(pm.response.json().name).to.eql('Priya Mehta'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{user2Token}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Priya Mehta\",\n  \"email\": \"priya.mehta@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "56. Admin updates his own name",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Name updated', () => pm.expect(pm.response.json().name).to.eql('Admin One Updated'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin One Updated\",\n  \"email\": \"admin1@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "57. Admin reverts his own name back",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Name reverted', () => pm.expect(pm.response.json().name).to.eql('Admin One'));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin One\",\n  \"email\": \"admin1@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "58. FAIL — Invalid email format on update → expect 400",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 400', () => pm.response.to.have.status(400));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Arjun Sharma\",\n  \"email\": \"not-a-valid-email\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        },
+
+        {
+          "name": "59. FAIL — No token on /me → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/me", "host": ["{{baseUrl}}"], "path": ["api","users","me"] }
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "🔒 Security Checks",
+      "item": [
+
+        {
+          "name": "60. User token on GET /api/admin/users → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "61. User token on POST /api/admin/users → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Hacker\",\n  \"email\": \"hacker@example.com\",\n  \"password\": \"hacker123\",\n  \"role\": \"ADMIN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        },
+
+        {
+          "name": "62. User token on GET /api/admin/tasks → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        },
+
+        {
+          "name": "63. User token on POST /api/admin/tasks → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{userToken}}", "type": "string" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Unauthorized Task\",\n  \"description\": \"This should be blocked\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/admin/tasks", "host": ["{{baseUrl}}"], "path": ["api","admin","tasks"] }
+          }
+        },
+
+        {
+          "name": "64. Admin token on GET /api/users/tasks → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks", "host": ["{{baseUrl}}"], "path": ["api","users","tasks"] }
+          }
+        },
+
+        {
+          "name": "65. Admin tries to mark a task ready → expect 403",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403', () => pm.response.to.have.status(403));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }] },
+            "method": "PATCH",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/users/tasks/4/ready", "host": ["{{baseUrl}}"], "path": ["api","users","tasks","4","ready"] }
+          }
+        },
+
+        {
+          "name": "66. Expired / Garbage token → expect 401",
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }],
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "eyJhbGciOiJIUzI1NiJ9.garbage.signature", "type": "string" }] },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api","admin","users"] }
+          }
+        }
+
+      ]
+    }
+
+  ]
+}
